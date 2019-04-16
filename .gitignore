@@ -7,3 +7,5 @@ logs/
 *.pt
 *.local
 unity-environment.log
+*.dll
+*.exe
