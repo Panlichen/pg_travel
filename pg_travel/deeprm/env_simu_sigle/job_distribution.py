@@ -16,11 +16,21 @@ class Dist:
         self.job_len_small_lower = 1
         self.job_len_small_upper = job_len / 5
 
+        # The demand for the dominant resource is chosen uniformly between 0:25r and 0:5r
+        # and the demand of the other resource is chosen uniformly between 0:05r and 0:1r.
+        # r = 10, so according to paper, dominant: [2.5, 5]; other: [0.5, 1]
+
         self.dominant_res_lower = max_nw_size / 2
         self.dominant_res_upper = max_nw_size
 
         self.other_res_lower = 1
         self.other_res_upper = max_nw_size / 5
+        #
+        # self.dominant_res_lower = max_nw_size * 0.25
+        # self.dominant_res_upper = max_nw_size * 0.5
+        #
+        # self.other_res_lower = max_nw_size * 0.05
+        # self.other_res_upper = max_nw_size * 0.1
 
     def normal_dist(self):
 

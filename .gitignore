@@ -9,3 +9,6 @@ logs/
 unity-environment.log
 *.dll
 *.exe
+*runs*/
+*model*/
+*.pdf

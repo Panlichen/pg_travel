@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 class Env:
     def __init__(self, hp, nw_len_seqs=None, nw_size_seqs=None,
-                 seed=42, render=False, end='no_new_job'):
+                 seed=42, render=False, end='all_done'):
 
         self.hp = hp
         self.render = render
@@ -19,10 +19,10 @@ class Env:
         self.nw_dist = self.hp.dist.bi_model_dist
 
         # set up random seed
-        if self.hp.unseen:
-            np.random.seed(314159)
-            torch.manual_seed(314159)
-        else:
+        if not self.hp.unseen:
+            # np.random.seed(314159)
+            # torch.manual_seed(314159)
+        # else:
             np.random.seed(seed)
             torch.manual_seed(seed)
 
@@ -39,8 +39,31 @@ class Env:
                     np.sum(self.nw_size_seqs[:, i] * self.nw_len_seqs) / \
                     float(self.hp.res_slot) / \
                     float(len(self.nw_len_seqs))
-                # NOTE: here all resources share the same float(self.hp.res_slot), but it should be
-                # different, that is, should be float(self.hp.res_slot[i])
+
+                # total_simulen = float(self.hp.simu_len * self.hp.num_ex)
+                # print(self.hp.DEBUG, np.sum(self.nw_size_seqs[:, i] * self.nw_len_seqs) / total_simulen,
+                #       float(self.hp.res_slot)
+                #       )
+                # print(self.hp.DEBUG, np.sum(self.nw_len_seqs > 0) / total_simulen)
+                # print("====big len")
+                #
+                # print(self.hp.DEBUG, np.sum(self.nw_len_seqs >= 10) / np.sum(self.nw_len_seqs > 0))
+                # print(self.hp.DEBUG, np.mean(self.nw_len_seqs[self.nw_len_seqs >= 10]))
+                # print("====small len")
+                #
+                # valid_len = self.nw_len_seqs[self.nw_len_seqs > 0]
+                # print(self.hp.DEBUG, np.sum(valid_len <= 3) / np.sum(self.nw_len_seqs > 0))
+                # print(self.hp.DEBUG, np.mean(valid_len[valid_len <= 3]))
+                # print("====dominate res")
+                #
+                # print(self.hp.DEBUG, np.sum(self.nw_size_seqs[:, i] >= 5) / np.sum(self.nw_len_seqs > 0))
+                # print(self.hp.DEBUG, np.mean(self.nw_size_seqs[:, i][self.nw_size_seqs[:, i] >= 5]))
+                # print("====other res")
+                #
+                # valid_size = self.nw_size_seqs[:, i][self.nw_size_seqs[:, i] > 0]
+                # print(self.hp.DEBUG, np.sum(valid_size <= 2) / np.sum(self.nw_len_seqs > 0))
+                # print(self.hp.DEBUG, np.mean(valid_size[valid_size <= 2]))
+                # print("====")
                 print("Load on # " + str(i) + "resource dimension is " + str(self.workload[i]))
 
             self.nw_len_seqs = np.reshape(self.nw_len_seqs,
@@ -279,7 +302,7 @@ class Env:
             self.plot_state()
 
         return ob, reward, done, info
-                
+
     def reset(self):
         self.seq_idx = 0
         self.curr_time = 0

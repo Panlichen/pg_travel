@@ -43,7 +43,7 @@ def get_sjf_action(machine, job_slot):
     return act
 
 
-def get_packer_sjf_action(machine, job_slot, knob):  # knob controls which to favor, 1 to packer, 0 to sjf
+def get_packer_sjf_action(machine, job_slot, knob=0.2):  # knob controls which to favor, 1 to packer, 0 to sjf
 
     combined_score = 0
     act = len(job_slot.slot)  # if no action available, hold

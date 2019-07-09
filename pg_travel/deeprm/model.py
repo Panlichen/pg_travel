@@ -28,7 +28,7 @@ class ActorLinear(nn.Module):
             x = x.view(-1)
         elif x.dim() == 4:  # for unsqueezed batch ob
             x = x.view(x.shape[0], x.shape[1], -1)
-            print(x.shape)
+            # print(x.shape)
         x = F.tanh(self.fc1(x))
         x = F.tanh(self.fc2(x))
         logits = self.fc3(x)
@@ -52,36 +52,6 @@ class CriticLinear(nn.Module):
         x = F.tanh(self.fc2(x))
         v = self.fc3(x)
         return v
-
-
-class ActorConv(nn.Module):
-    def __init__(self, input_height, input_width, channel, num_output):
-        super(ActorConv, self).__init__()
-        self.channel = channel  # channel = 16
-        self.input_height = input_height
-        self.input_width = input_width
-
-        self.k_s = 2
-        self.s = 1
-        self.p = 1
-        self.fc_in_size = self.channel * \
-                          calc_cnn_size(input_height, self.k_s, self.s, self.p) * \
-                          calc_cnn_size(input_width, self.k_s, self.s, self.p)
-
-        self.conv = nn.Conv2d(1, channel, kernel_size=self.k_s, stride=self.s, padding=self.p)
-        self.fc1 = nn.Linear(self.fc_in_size, num_output)
-
-        torch.nn.init.constant_(self.conv.bias, 0.)
-        torch.nn.init.normal_(self.conv.weight, mean=0., std=0.01)
-        torch.nn.init.constant_(self.fc1.bias, 0.)
-        torch.nn.init.normal_(self.fc1.weight, mean=0., std=0.01)
-
-    def forward(self, x):
-        x = F.relu(self.conv(x))
-        x = x.view(x.size(0), self.fc_in_size)
-        logits = self.fc1(x)
-        probs = F.softmax(logits)
-        return logits, probs
 
 
 class CriticConv(nn.Module):
@@ -197,3 +167,33 @@ class CriticConvBig(nn.Module):
         x = F.relu(self.fc1(x))
         v = self.fc2(x)
         return v
+
+
+class ActorConv(nn.Module):
+    def __init__(self, input_height, input_width, channel, num_output):
+        super(ActorConv, self).__init__()
+        self.channel = channel  # channel = 16
+        self.input_height = input_height
+        self.input_width = input_width
+
+        self.k_s = 2
+        self.s = 1
+        self.p = 1
+        self.fc_in_size = self.channel * \
+                          calc_cnn_size(input_height, self.k_s, self.s, self.p) * \
+                          calc_cnn_size(input_width, self.k_s, self.s, self.p)
+
+        self.conv = nn.Conv2d(1, channel, kernel_size=self.k_s, stride=self.s, padding=self.p)
+        self.fc1 = nn.Linear(self.fc_in_size, num_output)
+
+        torch.nn.init.constant_(self.conv.bias, 0.)
+        torch.nn.init.normal_(self.conv.weight, mean=0., std=0.01)
+        torch.nn.init.constant_(self.fc1.bias, 0.)
+        torch.nn.init.normal_(self.fc1.weight, mean=0., std=0.01)
+
+    def forward(self, x):
+        x = F.relu(self.conv(x))
+        x = x.view(x.size(0), self.fc_in_size)
+        logits = self.fc1(x)
+        probs = F.softmax(logits)
+        return logits, probs
